@@ -81,3 +81,22 @@ class Sale(models.Model):
 
     def __str__(self):
         return f"Sales [{self.restaurant.name}]"
+
+
+class Course(models.Model):
+    name = models.CharField(max_length=100)
+
+    def __str__(self):
+        return self.name
+    
+
+class Student(models.Model):
+    name = models.CharField(max_length=64)
+    course = models.ManyToManyField(
+        Course,
+        related_name='enrolled_by_students'
+    )
+
+    def __str__(self):
+        return self.name
+    
