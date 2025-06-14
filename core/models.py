@@ -94,9 +94,38 @@ class Student(models.Model):
     name = models.CharField(max_length=64)
     course = models.ManyToManyField(
         Course,
-        related_name='enrolled_by_students'
+        related_name='enrolled_by_students',
+        through='Enrollment',
     )
 
     def __str__(self):
         return self.name
     
+
+class Enrollment(models.Model):
+
+    class ModeChoices(models.TextChoices):
+        OFFLINE = 'offline', 'Offline'
+        ONLINE = 'online', 'Online'
+
+    student = models.ForeignKey(Student, on_delete=models.CASCADE)
+    course = models.ForeignKey(
+        Course,
+        on_delete=models.SET_NULL,
+        null=True,
+    )
+    date_enrolled = models.DateTimeField(auto_now_add=True)
+    mode = models.CharField(
+        choices=ModeChoices.choices,
+        default=ModeChoices.OFFLINE,
+    )
+
+    class Meta:
+
+        constraints = [
+            models.UniqueConstraint(
+                fields=['student', 'course'],
+                name='student_course_unique',
+            )
+        ]
+

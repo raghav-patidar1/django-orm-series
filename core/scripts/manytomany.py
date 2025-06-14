@@ -1,7 +1,7 @@
 from random import choice
 
 from django.db.models.functions import Lower
-from core.models import Course, Student
+from core.models import Course, Student, Enrollment
 
 def run():
 
@@ -129,4 +129,12 @@ def run():
     course = Course.objects.get(name='Java')
     students = course.enrolled_by_students.order_by(Lower('name'))
 
-    
+
+    # ============= through model ============
+
+    # Retreive all records from Enrollment (through model) irrespective 
+    # of a particular student and course instance
+    enrollments = Enrollment.objects.order_by(Lower('student__name'))
+
+    for e in enrollments:
+        print(f"{e.student.name} | {e.course.name} | {e.date_enrolled.date()} | {e.mode}")
